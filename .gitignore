@@ -1,0 +1,20 @@
+# Build output (the exe goes on the GitHub Releases page, not in the repo)
+build/
+dist/
+*.spec
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Logs and local files
+*.log
+.winnotch/
+
+# Editors / OS
+.vscode/
+.idea/
+Thumbs.db
+desktop.ini

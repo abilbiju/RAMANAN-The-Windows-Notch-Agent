@@ -1,0 +1,381 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ramanan – Your Windows Notch Agent</title>
+  <meta name="description" content="A Dynamic Island–style notch for Windows 10 & 11. Music, volume, battery, downloads, camera alerts and a file shelf, looked after by a tiny pixel Ramanan who dances to your songs. Free and open source.">
+  <meta name="theme-color" content="#0d252b">
+  <link rel="icon" href="/assets/icon.png" type="image/png">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Ramanan – Your Windows Notch Agent">
+  <meta property="og:description" content="The Dynamic Island your Windows PC never had, with a pixel Ramanan who dances to your music. Free & open source.">
+  <meta property="og:image" content="/assets/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Inter:wght@400;500;600&family=Silkscreen&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+  <script type="module" src="/js/app.js"></script>
+</head>
+<body>
+  <canvas class="sea" aria-hidden="true"></canvas>
+
+  <!-- ===== Nav ===== -->
+  <header class="nav">
+    <a class="brand" href="#top" aria-label="Ramanan home">
+      <canvas class="brand-sprite" aria-hidden="true"></canvas>
+      <span>Ramanan</span>
+    </a>
+    <nav class="nav-links" aria-label="Sections">
+      <a href="#features">Features</a>
+      <a href="#meet">Meet Ramanan</a>
+      <a href="#install">Install</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <div class="nav-actions">
+      <a class="gh-pill" data-link="repo" href="https://github.com/abilbiju/RAMANAN-The-Windows-Notch-Agent" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.52-1.33-1.28-1.68-1.28-1.68-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.4-5.26 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5Z"/></svg>
+        <span>Star</span><b data-stat="stars">–</b>
+      </a>
+      <a class="btn btn-sm btn-yellow" data-link="download" href="https://github.com/abilbiju/RAMANAN-The-Windows-Notch-Agent/releases/latest/download/Ramanan.exe">Download</a>
+    </div>
+  </header>
+
+  <main id="top">
+    <!-- ===== Hero ===== -->
+    <section class="hero">
+      <p class="kicker"><span class="dot"></span> Windows 10 &amp; 11 · Free · Open source</p>
+      <h1>The Dynamic Island<br>your PC <em>never had.</em></h1>
+      <p class="lede">Ramanan turns the top of your screen into a living notch for music, volume, battery,
+        downloads and camera alerts, looked after by a tiny pixel <strong>Ramanan</strong> who dances when your songs play.</p>
+      <div class="cta-row">
+        <a class="btn btn-yellow btn-lg" data-link="download" href="https://github.com/abilbiju/RAMANAN-The-Windows-Notch-Agent/releases/latest/download/Ramanan.exe">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M3 5.5 10.4 4.5v7H3zm0 13 7.4 1v-7H3zm8.4 1.1L21 21v-8.5h-9.6zm0-15.2v7.1H21V3z"/></svg>
+          Download for Windows
+        </a>
+        <a class="btn btn-ghost btn-lg" data-link="repo" href="https://github.com/abilbiju/RAMANAN-The-Windows-Notch-Agent" target="_blank" rel="noopener">View on GitHub</a>
+      </div>
+      <p class="meta"><span data-stat="version">v1.0.0</span> · 58.6 MB · no install, just run it<span class="os-note" hidden></span></p>
+
+      <!-- Interactive notch demo -->
+      <div class="stage-wrap" id="demo">
+        <div class="stage">
+          <div class="wall"><canvas class="wall-fish" aria-hidden="true"></canvas></div>
+          <div class="win w1" aria-hidden="true"><div class="wbar"><i></i><i></i><i></i></div>
+            <div class="wbody"><span class="hero"></span><span></span><span></span><span class="short"></span></div></div>
+          <div class="win w2" aria-hidden="true"><div class="wbar"><i></i><i></i><i></i></div>
+            <div class="wbody"><span></span><span></span><span></span><span></span><span></span><span></span></div></div>
+
+          <div class="notch" data-view="idle" tabindex="0" aria-label="Interactive notch demo. Hover or focus to expand.">
+            <div class="ear l"></div><div class="ear r"></div>
+
+            <div class="nv nv-idle">
+              <canvas class="nv-fish" aria-hidden="true"></canvas>
+              <canvas class="nv-sprite idle-sprite" aria-hidden="true"></canvas>
+              <span class="pdots"><i class="g"></i><i class="o"></i></span>
+            </div>
+
+            <div class="nv nv-music">
+              <canvas class="nv-sprite music-sprite" aria-hidden="true"></canvas>
+              <span class="nv-title">Changa Chaka Chakaa</span>
+              <span class="bars"><i></i><i></i><i></i><i></i><i></i></span>
+            </div>
+
+            <div class="nv nv-hud">
+              <span class="hud-icon" aria-hidden="true"></span>
+              <span class="hud-text"><b class="hud-title">Volume</b><small class="hud-sub">Speakers (Realtek Audio)</small></span>
+              <span class="hud-bar"><i></i></span>
+              <b class="hud-value">64</b>
+            </div>
+
+            <div class="nv nv-expanded">
+              <div class="ex-head">
+                <span class="tabs"><i class="on">⌂</i><i>▭</i><i>◎</i></span>
+                <span class="ex-batt">82% <span class="batt"><i></i></span></span>
+              </div>
+              <div class="ex-body">
+                <div class="ex-art"></div>
+                <div class="ex-info">
+                  <div class="ex-top">
+                    <div><b>Changa Chaka Chakaa</b><small>Ramanan &amp; the Fish · Spotify</small></div>
+                    <span class="bars big"><i></i><i></i><i></i><i></i><i></i></span>
+                  </div>
+                  <p class="ex-lyric">Mothalaalee…</p>
+                  <div class="ex-prog"><small class="t0">1:16</small><span><i></i></span><small>3:32</small></div>
+                  <div class="ex-ctrl" aria-hidden="true">
+                    <svg viewBox="0 0 24 24"><path d="M11 6 4 12l7 6zM20 6l-7 6 7 6z"/></svg>
+                    <svg viewBox="0 0 24 24"><path d="M6 6v12M18 6 9 12l9 6z"/></svg>
+                    <svg class="pp" viewBox="0 0 24 24"><path d="M8 5v14M16 5v14"/></svg>
+                    <svg viewBox="0 0 24 24"><path d="M18 6v12M6 6l9 6-9 6z"/></svg>
+                    <svg viewBox="0 0 24 24"><path d="m13 6 7 6-7 6zM4 6l7 6-7 6z"/></svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="taskbar" aria-hidden="true">
+            <span class="tb-start"></span><span></span><span></span><span></span>
+            <span class="tb-tray"><canvas class="tray-sprite"></canvas><small>14:20</small></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="chips" role="group" aria-label="Try a notch state">
+        <button data-show="idle" class="on">Resting</button>
+        <button data-show="music">Music</button>
+        <button data-show="expanded">Expanded</button>
+        <button data-show="volume">Volume</button>
+        <button data-show="charging">Charging</button>
+        <button data-show="camera">Camera</button>
+        <button data-show="download">Download</button>
+        <button data-show="caps">Caps Lock</button>
+      </div>
+      <p class="hint">Hover the notch to expand it, or pick a state.</p>
+    </section>
+
+    <!-- ===== Marquee ===== -->
+    <div class="marquee" aria-hidden="true">
+      <div class="track">
+        <span>CHANGA CHAKA CHAKAA</span><b>✦</b><span>NOW PLAYING</span><b>✦</b><span>VOLUME</span><b>✦</b>
+        <span>BATTERY</span><b>✦</b><span>DOWNLOADS</span><b>✦</b><span>MOTHALAALEE</span><b>✦</b>
+        <span>FILE SHELF</span><b>✦</b><span>CAMERA ALERTS</span><b>✦</b><span>LYRICS</span><b>✦</b>
+        <span>CHANGA CHAKA CHAKAA</span><b>✦</b><span>NOW PLAYING</span><b>✦</b><span>VOLUME</span><b>✦</b>
+        <span>BATTERY</span><b>✦</b><span>DOWNLOADS</span><b>✦</b><span>MOTHALAALEE</span><b>✦</b>
+        <span>FILE SHELF</span><b>✦</b><span>CAMERA ALERTS</span><b>✦</b><span>LYRICS</span><b>✦</b>
+      </div>
+    </div>
+
+    <!-- ===== Features ===== -->
+    <section class="section" id="features">
+      <p class="eyebrow">Features</p>
+      <h2>Everything lives in the notch.</h2>
+      <p class="sub">Glance up for what matters, hover for more, and forget it's there the rest of the time.</p>
+
+      <div class="bento">
+        <article class="card c-wide reveal">
+          <div class="ic ic-pink"><svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></div>
+          <h3>Now playing, everywhere</h3>
+          <p>Spotify, YouTube in your browser, Media Player, VLC: if it plays, the notch shows it. Album art,
+            a seek bar, ±15 seconds, <strong>synced lyrics</strong>, and a one-click switch between speakers and headphones.</p>
+          <div class="mini-player" aria-hidden="true">
+            <span class="mp-art"></span>
+            <span class="mp-text"><b>Changa Chaka Chakaa</b><small class="mp-lyric">changa chaka chakaa ♪</small></span>
+            <span class="bars"><i></i><i></i><i></i><i></i><i></i></span>
+          </div>
+        </article>
+
+        <article class="card reveal">
+          <div class="ic ic-yellow"><svg viewBox="0 0 24 24"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M19 5a10 10 0 0 1 0 14"/></svg></div>
+          <h3>System HUDs</h3>
+          <p>Volume, brightness, Caps Lock, Num Lock and Do Not Disturb, in a notch that grows and shrinks with a little spring.</p>
+        </article>
+
+        <article class="card reveal">
+          <div class="ic ic-green"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="16" height="10" rx="2"/><path d="M22 11v2"/><path d="m11 8.5-2.5 3.5h3.5L9.5 15.5"/></svg></div>
+          <h3>Battery that cares</h3>
+          <p>A charging animation when you plug in, a heads-up when you unplug, and a nudge before you run low.</p>
+        </article>
+
+        <article class="card reveal">
+          <div class="ic ic-teal"><svg viewBox="0 0 24 24"><path d="m22 8-6 4 6 4V8z"/><rect x="2" y="6" width="14" height="12" rx="2"/></svg></div>
+          <h3>Privacy dots</h3>
+          <p>A green dot when something's using your camera, an orange one for the mic, and the name of the app doing it.</p>
+        </article>
+
+        <article class="card reveal">
+          <div class="ic ic-blue"><svg viewBox="0 0 24 24"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg></div>
+          <h3>Live downloads</h3>
+          <p>Browser downloads show size and speed as they come in, then a tap on "Show" takes you to the file.</p>
+        </article>
+
+        <article class="card reveal">
+          <div class="ic ic-yellow"><svg viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></div>
+          <h3>File shelf</h3>
+          <p>Drop files on the notch to park them, then drag them out into an email, a chat or a folder.</p>
+        </article>
+
+        <article class="card reveal">
+          <div class="ic ic-pink"><svg viewBox="0 0 24 24"><circle cx="12" cy="9" r="4"/><path d="M4.5 21a7.5 7.5 0 0 1 15 0"/></svg></div>
+          <h3>Mirror</h3>
+          <p>Check your hair before the call. The camera only switches on while the Mirror tab is open.</p>
+        </article>
+
+        <article class="card reveal">
+          <div class="ic ic-teal"><svg viewBox="0 0 24 24"><path d="m5 9-3 3 3 3"/><path d="m9 5 3-3 3 3"/><path d="m15 19-3 3-3-3"/><path d="m19 9 3 3-3 3"/><path d="M2 12h20M12 2v20"/></svg></div>
+          <h3>Put it anywhere</h3>
+          <p>Drag the notch to any screen edge to dock it there, or drop it mid-screen as a floating pill.</p>
+        </article>
+
+        <article class="card reveal">
+          <div class="ic ic-yellow"><canvas class="card-sprite" aria-hidden="true"></canvas></div>
+          <h3>A resident mascot</h3>
+          <p>Pixel Ramanan rests in your notch while fish swim by, and dances when the music starts. Or switch him off.</p>
+        </article>
+
+        <article class="card c-wide reveal">
+          <div class="ic ic-blue"><svg viewBox="0 0 24 24"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg></div>
+          <h3>Make it yours</h3>
+          <p>Pill, slim bar or invisible. Any size, any display, colours that match your album art or a colour you pick.
+            Choose which alerts you want, lock its position, and start it with Windows.</p>
+          <div class="pills" aria-hidden="true"><span>Pill</span><span>Slim bar</span><span>Invisible</span><span>85–130%</span><span>Accent colour</span><span>Start with Windows</span></div>
+        </article>
+      </div>
+
+      <figure class="shot reveal">
+        <img src="/assets/preview.png" alt="Screenshots of Ramanan: the expanded music player with lyrics, Ramanan resting in the notch, dancing in the now-playing pill, the volume HUD and the floating pill" loading="lazy" width="2400" height="1776">
+      </figure>
+    </section>
+
+    <!-- ===== Meet Ramanan ===== -->
+    <section class="section meet" id="meet">
+      <div class="meet-art reveal">
+        <div class="aquarium">
+          <canvas class="aq-fish" aria-hidden="true"></canvas>
+          <canvas class="meet-sprite" aria-label="Pixel-art Ramanan"></canvas>
+        </div>
+        <button class="btn btn-pink" id="dance">Make him dance 🕺</button>
+      </div>
+      <div class="meet-copy reveal">
+        <p class="eyebrow">Meet Ramanan</p>
+        <h2>Your notch has a resident now.</h2>
+        <p>He's a 16×19-pixel fan tribute to the legendary Ramanan from <em>Punjabi House</em>: curly hair,
+          big moustache, bigger grin, yellow shirt, arms crossed like he owns the place.</p>
+        <ul class="ticks">
+          <li>Stands in your notch while pixel fish swim by</li>
+          <li>Blinks and raises an eyebrow when you least expect it</li>
+          <li>Dances in time to whatever you're playing</li>
+          <li>Prefer a plain notch? Settings → Appearance → Mascot → None</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ===== Install ===== -->
+    <section class="section" id="install">
+      <p class="eyebrow">Install</p>
+      <h2>Up and running in a minute.</h2>
+      <p class="sub">No installer, no Python, no setup. One file.</p>
+
+      <ol class="steps">
+        <li class="step reveal">
+          <span class="num">1</span>
+          <h3>Download</h3>
+          <p>Get <code>Ramanan.exe</code> and put it somewhere permanent, like <code>Documents\Ramanan</code>.</p>
+          <a class="btn btn-yellow" data-link="download" href="https://github.com/abilbiju/RAMANAN-The-Windows-Notch-Agent/releases/latest/download/Ramanan.exe">Download Ramanan.exe</a>
+        </li>
+        <li class="step reveal">
+          <span class="num">2</span>
+          <h3>Run it</h3>
+          <p>The app isn't code-signed yet, so Windows may warn you the first time. Click <b>More info</b>, then <b>Run anyway</b>.</p>
+          <div class="smartscreen" aria-hidden="true">
+            <b>Windows protected your PC</b>
+            <small>Microsoft Defender SmartScreen prevented an unrecognised app from starting…</small>
+            <span class="ss-link">More info</span>
+            <span class="ss-btns"><span class="ss-run">Run anyway</span><span>Don't run</span></span>
+          </div>
+        </li>
+        <li class="step reveal">
+          <span class="num">3</span>
+          <h3>Look up</h3>
+          <p>Ramanan appears at the top of your screen and keeps running in the background. Its icon sits in the
+            taskbar tray (behind the <b>^</b> arrow).</p>
+          <div class="tray-demo" aria-hidden="true"><span>^</span><canvas class="tray-sprite big"></canvas><span>ENG</span><span>14:20</span></div>
+        </li>
+        <li class="step reveal">
+          <span class="num">4</span>
+          <h3>Make it yours</h3>
+          <p>Right-click the notch or double-click the tray icon for Settings. Turn on <b>Start with Windows</b> so it's always there.</p>
+        </li>
+      </ol>
+
+      <div class="reqs reveal">
+        <div><b>Windows</b><span>10 (1809+) or 11, 64-bit</span></div>
+        <div><b>Size</b><span>58.6 MB, one file</span></div>
+        <div><b>Memory</b><span>About 150 MB while running</span></div>
+        <div><b>Internet</b><span>Only for lyrics (optional)</span></div>
+      </div>
+    </section>
+
+    <!-- ===== Open source ===== -->
+    <section class="section oss" id="github">
+      <div class="oss-copy reveal">
+        <p class="eyebrow">Open source</p>
+        <h2>Built in the open.</h2>
+        <p>Ramanan is MIT-licensed and written in Python with PySide6. Read the code, build it yourself, report a bug,
+          or send a pull request with your own idea.</p>
+        <div class="stats">
+          <div><b data-stat="stars">–</b><span>Stars</span></div>
+          <div><b data-stat="forks">–</b><span>Forks</span></div>
+          <div><b data-stat="downloads">–</b><span>Downloads</span></div>
+          <div><b data-stat="version">v1.0.0</b><span data-stat="released">Latest</span></div>
+        </div>
+        <div class="cta-row">
+          <a class="btn btn-ghost" data-link="repo" href="https://github.com/abilbiju/RAMANAN-The-Windows-Notch-Agent" target="_blank" rel="noopener">★ Star on GitHub</a>
+          <a class="btn btn-ghost" data-link="issues" href="https://github.com/abilbiju/RAMANAN-The-Windows-Notch-Agent/issues/new" target="_blank" rel="noopener">Report a bug</a>
+        </div>
+      </div>
+      <div class="terminal reveal">
+        <div class="term-bar"><i></i><i></i><i></i><span>PowerShell</span><button class="copy" data-copy="#build-cmds">Copy</button></div>
+<pre id="build-cmds"><span class="c"># run from source</span>
+git clone https://github.com/abilbiju/RAMANAN-The-Windows-Notch-Agent
+cd RAMANAN-The-Windows-Notch-Agent
+python -m venv .venv
+.venv\Scripts\pip install -r requirements.txt
+.venv\Scripts\python main.py
+
+<span class="c"># build your own Ramanan.exe</span>
+powershell -ExecutionPolicy Bypass -File build.ps1</pre>
+      </div>
+    </section>
+
+    <!-- ===== FAQ ===== -->
+    <section class="section" id="faq">
+      <p class="eyebrow">FAQ</p>
+      <h2>Good questions.</h2>
+      <div class="faq">
+        <details class="reveal"><summary>Is it really free?</summary>
+          <p>Yes. Ramanan is free and open source under the MIT license, with no ads, accounts or upsells.</p></details>
+        <details class="reveal"><summary>Why does Windows say it "protected my PC"?</summary>
+          <p>SmartScreen warns about any app that isn't signed with a paid code-signing certificate and that it hasn't seen
+            many times yet. Click <b>More info → Run anyway</b>. If you'd rather check first, all of the source code is on GitHub
+            and you can build the exe yourself.</p></details>
+        <details class="reveal"><summary>What does it do with my data?</summary>
+          <p>Nothing leaves your PC except lyrics lookups: the song title, artist and album go to
+            <a href="https://lrclib.net" target="_blank" rel="noopener">LRCLIB</a> to fetch synced lyrics, and you can turn that off in
+            Settings. There's no tracking or telemetry. The camera only runs while the Mirror tab is open.</p></details>
+        <details class="reveal"><summary>Does it work on Mac or Linux?</summary>
+          <p>No, Ramanan is Windows-only (10 and 11). It reads Windows' own media, audio, battery and privacy information.</p></details>
+        <details class="reveal"><summary>Can I move the notch or hide it?</summary>
+          <p>Drag it to any edge, or into the middle of the screen as a floating pill. You can lock its position, make it a slim bar
+            or invisible until you hover, and it hides itself in fullscreen games and videos.</p></details>
+        <details class="reveal"><summary>How do I uninstall it?</summary>
+          <p>Turn off <b>Start with Windows</b> in Settings, right-click the tray icon and choose <b>Quit</b>, then delete
+            <code>Ramanan.exe</code>. To remove its saved settings too, delete the <code>.winnotch</code> folder in your user folder.</p></details>
+        <details class="reveal"><summary>Who is Ramanan?</summary>
+          <p>Ramanan is the much-loved character from the Malayalam film <em>Punjabi House</em> (2002). The pixel mascot is an original
+            fan tribute drawn in code. This project isn't affiliated with or endorsed by the film's makers or cast.</p></details>
+      </div>
+    </section>
+
+    <!-- ===== Final CTA ===== -->
+    <section class="final reveal">
+      <canvas class="final-sprite" aria-hidden="true"></canvas>
+      <h2>Changa chaka chakaa.<br><span>Give your notch a resident.</span></h2>
+      <a class="btn btn-yellow btn-lg" data-link="download" href="https://github.com/abilbiju/RAMANAN-The-Windows-Notch-Agent/releases/latest/download/Ramanan.exe">Download for Windows</a>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="foot-brand"><canvas class="brand-sprite" aria-hidden="true"></canvas><b>Ramanan</b><span>Your Windows Notch Agent</span></div>
+    <nav aria-label="Footer">
+      <a data-link="repo" href="https://github.com/abilbiju/RAMANAN-The-Windows-Notch-Agent" target="_blank" rel="noopener">GitHub</a>
+      <a data-link="releases" href="https://github.com/abilbiju/RAMANAN-The-Windows-Notch-Agent/releases" target="_blank" rel="noopener">Releases</a>
+      <a data-link="issues" href="https://github.com/abilbiju/RAMANAN-The-Windows-Notch-Agent/issues" target="_blank" rel="noopener">Issues</a>
+      <a data-link="license" href="https://github.com/abilbiju/RAMANAN-The-Windows-Notch-Agent/blob/main/LICENSE" target="_blank" rel="noopener">MIT License</a>
+    </nav>
+    <p class="fine">A fan tribute to Ramanan from <em>Punjabi House</em>. Not affiliated with the film, its makers or cast.
+      Windows is a trademark of Microsoft. Pixel art is original.</p>
+  </footer>
+</body>
+</html>

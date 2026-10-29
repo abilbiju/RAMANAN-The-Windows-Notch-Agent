@@ -1,0 +1,29 @@
+{
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "redirects": [
+    {
+      "source": "/download",
+      "destination": "https://github.com/abilbiju/RAMANAN-The-Windows-Notch-Agent/releases/latest/download/Ramanan.exe",
+      "permanent": false
+    },
+    {
+      "source": "/github",
+      "destination": "https://github.com/abilbiju/RAMANAN-The-Windows-Notch-Agent",
+      "permanent": false
+    }
+  ],
+  "headers": [
+    {
+      "source": "/assets/(.*)",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=604800" }]
+    },
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
+      ]
+    }
+  ]
+}

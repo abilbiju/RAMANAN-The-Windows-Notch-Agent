@@ -167,7 +167,7 @@ class MediaPage(QWidget):
             return
         pos, dur = current_position(snap), snap.get("duration", 0)
         self.bar.setValue(pos / dur if dur > 0 else 0)
-        self.elapsed.setText(fmt_time(pos) if dur > 0 else "")
+        self.elapsed.setText(fmt_time(pos) if dur > 0 or snap.get("elapsed_only") else "")
         self.total.setText(fmt_time(dur) if dur > 0 else "")
         if self.lyrics:
             self.lyric.setColor(self.accent)

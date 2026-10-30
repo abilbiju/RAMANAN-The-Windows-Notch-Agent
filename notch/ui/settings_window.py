@@ -4,12 +4,12 @@ notch reacts to Settings.changed, so changes apply live."""
 import sys
 from pathlib import Path
 
-from PySide6.QtCore import Qt, Signal
-from PySide6.QtGui import QColor, QGuiApplication
-from PySide6.QtWidgets import (QCheckBox, QColorDialog, QComboBox, QFormLayout, QHBoxLayout, QLabel,
+from PySide6.QtCore import Qt, QUrl, Signal
+from PySide6.QtGui import QColor, QDesktopServices, QGuiApplication
+from PySide6.QtWidgets import (QCheckBox, QColorDialog, QComboBox, QFormLayout, QFrame, QHBoxLayout, QLabel,
                                QPushButton, QSlider, QTabWidget, QVBoxLayout, QWidget)
 
-from .. import APP_NAME
+from .. import APP_NAME, REPO, VERSION
 from ..settings import DEFAULTS, autostart_enabled, set_autostart
 
 STYLE = """
@@ -30,12 +30,18 @@ QCheckBox::indicator:checked { image: url(%TOGGLE_ON%); }
 QSlider::groove:horizontal { height: 4px; background: #3a3a3c; border-radius: 2px; }
 QSlider::sub-page:horizontal { background: #0a84ff; border-radius: 2px; }
 QSlider::handle:horizontal { width: 16px; height: 16px; margin: -6px 0; border-radius: 8px; background: #f5f5f7; }
+QFrame#banner { background: #0a3d1f; border: 1px solid #30d158; border-radius: 10px; }
+QFrame#banner QLabel { background: transparent; }
 """
+
+UPDATE_STATUS = {"checking": "Checking for updates…", "latest": "You're on the latest version.",
+                 "error": "Couldn't reach GitHub. Will try again later."}
 
 
 class SettingsWindow(QWidget):
     restart_requested = Signal()
     preview_requested = Signal()
+    check_requested = Signal()
 
     def __init__(self, settings):
         super().__init__(None, Qt.Window)
@@ -48,10 +54,11 @@ class SettingsWindow(QWidget):
 
         root = QVBoxLayout(self)
         root.setContentsMargins(18, 18, 18, 14)
-        tabs = QTabWidget()
+        self.tabs = tabs = QTabWidget()
         tabs.addTab(self._appearance(), "Appearance")
         tabs.addTab(self._behaviour(), "Behaviour")
         tabs.addTab(self._notifications(), "Notifications")
+        self._about_index = tabs.addTab(self._about(), "About")
         root.addWidget(tabs, 1)
 
         footer = QHBoxLayout()
@@ -204,7 +211,9 @@ class SettingsWindow(QWidget):
         form.addRow(self._check("compact_media", "Show the now-playing pill while music plays"))
         form.addRow(self._check("hud_track", "Announce track changes"))
         form.addRow(self._check("lyrics", "Show synced lyrics"))
-        form.addRow(self._hint("Lyrics are looked up on lrclib.net using the track title, artist and album."))
+        form.addRow(self._hint("Lyrics are looked up on lrclib.net using the track title, artist and album. "
+                               "When a song changes on its own in a browser player, its length may stay "
+                               "hidden until you seek or skip."))
         return page
 
     def _notifications(self):
@@ -218,6 +227,68 @@ class SettingsWindow(QWidget):
             form.addRow(self._check(key, label))
         form.addRow(self._hint("Camera and microphone dots stay visible even when the HUD is turned off."))
         return page
+
+    def _about(self):
+        page, form = self._page()
+        self._section(form, APP_NAME)
+        form.addRow("Version", QLabel(f"v{VERSION}"))
+
+        self.banner = QFrame()
+        self.banner.setObjectName("banner")
+        lay = QVBoxLayout(self.banner)
+        lay.setContentsMargins(14, 12, 14, 12)
+        self.banner_title = QLabel()
+        self.banner_title.setStyleSheet("font-weight: 600; font-size: 14px;")
+        self.banner_notes = self._hint("")
+        buttons = QHBoxLayout()
+        self.download_button = QPushButton("Download")
+        self.download_button.setObjectName("primary")
+        notes = QPushButton("What's new")
+        buttons.addWidget(self.download_button)
+        buttons.addWidget(notes)
+        buttons.addStretch()
+        lay.addWidget(self.banner_title)
+        lay.addWidget(self.banner_notes)
+        lay.addLayout(buttons)
+        self.download_button.clicked.connect(lambda: self._open(self._update.get("download") or self._update["page"]))
+        notes.clicked.connect(lambda: self._open(self._update["page"]))
+        self.banner.hide()
+        self._update = {}
+        form.addRow(self.banner)
+
+        self._section(form, "Updates")
+        form.addRow(self._check("check_updates", "Check for new versions automatically"))
+        row = QHBoxLayout()
+        row.setSpacing(12)
+        check = QPushButton("Check now")
+        check.clicked.connect(self.check_requested)
+        self.update_status = self._hint("")
+        row.addWidget(check)
+        row.addWidget(self.update_status, 1)
+        form.addRow(row)
+        form.addRow(self._hint(f"Asks GitHub for the latest release of {REPO}. Download the new "
+                               f"Ramanan.exe and replace the old one to update."))
+        return page
+
+    def show_update(self, info):
+        state = info["state"]
+        if state == "available":
+            self._update = info
+            self.banner_title.setText(f"{APP_NAME} v{info['version']} is available")
+            first = next((l.strip("-*# ").strip() for l in info["notes"].splitlines() if l.strip()), "")
+            self.banner_notes.setText(first or f"You have v{VERSION}.")
+            self.banner.show()
+            self.update_status.setText(f"v{info['version']} is ready to download.")
+            self.tabs.setTabText(self._about_index, "About  ●")
+        else:
+            self.update_status.setText(UPDATE_STATUS[state])
+            if state == "latest":
+                self.banner.hide()
+                self.tabs.setTabText(self._about_index, "About")
+
+    @staticmethod
+    def _open(url):
+        QDesktopServices.openUrl(QUrl(url))
 
     # ---- helpers --------------------------------------------------------------
 

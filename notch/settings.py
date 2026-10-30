@@ -29,6 +29,7 @@ DEFAULTS = {
     "default_tab": 0,
     "show_mirror": True,
     "lyrics": True,
+    "check_updates": True,      # look for new releases on GitHub every few hours
     # which HUDs / live activities to show
     "hud_volume": True,
     "hud_brightness": True,

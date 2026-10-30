@@ -229,6 +229,7 @@ async function cached(url) {
     const exe = rel.assets.find((a) => /\.exe$/i.test(a.name));
     if (exe) {
       $$('[data-link="download"]').forEach((a) => (a.href = exe.browser_download_url));
+      setStat("size", `${(exe.size / 1048576).toFixed(1)} MB`);
     }
   } catch { setStat("downloads", "–"); }
 

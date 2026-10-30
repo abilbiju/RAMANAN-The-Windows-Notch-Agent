@@ -43,6 +43,14 @@ class MediaService(threading.Thread):
         self._track_key = None
         self._art = b""
         self._last = None
+        # Some browser players (Apple Music web) stream the whole queue as one media
+        # element, so on auto-advance the timeline keeps counting from the previous
+        # songs and its "duration" is the buffered queue. We remember where in that
+        # stream the track began and report time from there, with no known length.
+        self._offset = None
+        # Artwork lags the title the same way: the previous track's image, refused for a few seconds.
+        self._stale_art = b""
+        self._stale_art_until = 0.0
 
     def run(self):
         asyncio.set_event_loop(self.loop)
@@ -83,15 +91,37 @@ class MediaService(threading.Thread):
             info = session.get_playback_info()
             timeline = session.get_timeline_properties()
             key = (session.source_app_user_model_id, props.title, props.artist)
+            playing = info.playback_status == PlaybackStatus.PLAYING
+            updated = timeline.last_updated_time
+            valid_stamp = updated.year > 1601
+            updated_ts = updated.timestamp() if valid_stamp else time.time()
+            position = (timeline.position - timeline.start_time).total_seconds()
+            duration = (timeline.end_time - timeline.start_time).total_seconds()
+            if duration <= 0:
+                duration = (timeline.max_seek_time - timeline.min_seek_time).total_seconds()
+
+            now = time.time()
+            live = position + (max(now - updated_ts, 0) if playing else 0)
             if key != self._track_key:
+                same_app = self._track_key is not None and self._track_key[0] == key[0]
+                self._offset = live if same_app and valid_stamp and live > 5 else None
                 self._track_key = key
+                prev_art = self._art
                 self._art = await self._read_thumbnail(props.thumbnail)
+                if same_app and prev_art and self._art == prev_art:
+                    self._stale_art, self._stale_art_until = prev_art, now + 6
+                    self._art = b""
             elif not self._art and props.thumbnail is not None:
                 # Some players publish the artwork a moment after the title.
-                self._art = await self._read_thumbnail(props.thumbnail)
+                art = await self._read_thumbnail(props.thumbnail)
+                if art != self._stale_art or time.time() > self._stale_art_until:
+                    self._art, self._stale_art = art, b""
 
-            updated = timeline.last_updated_time
-            updated_ts = updated.timestamp() if updated.year > 1601 else time.time()
+            if self._offset is not None and live < self._offset - 2:
+                self._offset = None  # timeline restarted: the player now reports this track itself
+            if self._offset is not None:
+                position, duration = position - self._offset, 0.0
+
             controls = info.controls
             snap = {
                 "active": True,
@@ -100,10 +130,11 @@ class MediaService(threading.Thread):
                 "title": props.title or "",
                 "artist": props.artist or props.album_artist or "",
                 "album": props.album_title or "",
-                "playing": info.playback_status == PlaybackStatus.PLAYING,
-                "position": timeline.position.total_seconds(),
-                "duration": (timeline.end_time - timeline.start_time).total_seconds(),
+                "playing": playing,
+                "position": position,
+                "duration": duration,
                 "updated_at": updated_ts,
+                "elapsed_only": self._offset is not None,
                 "can_seek": bool(controls.is_playback_position_enabled),
                 "can_next": bool(controls.is_next_enabled),
                 "can_prev": bool(controls.is_previous_enabled),
@@ -157,4 +188,5 @@ def current_position(snap):
     if snap["playing"]:
         pos += max(time.time() - snap["updated_at"], 0)
     duration = snap["duration"]
+    pos = max(pos, 0.0)
     return min(pos, duration) if duration > 0 else pos

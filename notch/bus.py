@@ -16,3 +16,4 @@ class Bus(QObject):
     downloads = Signal(object)        # list of active download dicts
     download_done = Signal(str, str)  # file name, full path
     fullscreen = Signal(bool)         # a fullscreen app / presentation is active
+    update = Signal(object)           # {"state": ..., "version", "page", "download", "notes"} from UpdateChecker

@@ -69,5 +69,5 @@ python -m venv .venv
 
 ## License
 
-MIT. See [LICENSE.md](LICENSE.md). Bundled libraries keep their own licenses: see
+MIT. See [LICENSE](LICENSE). Bundled libraries keep their own licenses: see
 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).

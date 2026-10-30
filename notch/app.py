@@ -17,6 +17,7 @@ from .services.downloads import Downloads
 from .services.lyrics import Lyrics
 from .services.media import MediaService
 from .services.system import Battery, FocusAssist, Fullscreen, LockKeys, Privacy, brightness_watcher
+from .services.updates import UpdateChecker
 from .settings import DEFAULTS, Settings
 from .ui.expanded import DATA_DIR, dark_menu
 from .ui.settings_window import SettingsWindow
@@ -139,8 +140,14 @@ def main():
                                 "This is how notifications look", bar=0.65, color=window.accent,
                                 value="65", duration=2500))
 
+    updates = UpdateChecker(bus)
+    updates.enabled = settings.get("check_updates")
+    settings.changed.connect(lambda k: k == "check_updates" and setattr(updates, "enabled", settings.get(k)))
+    settings_window.check_requested.connect(updates.check_now)
+    bus.update.connect(settings_window.show_update)
+
     services = [media, audio, LockKeys(bus), FocusAssist(bus), Battery(bus), Privacy(bus),
-                Fullscreen(bus), Downloads(bus), brightness_watcher(bus)]
+                Fullscreen(bus), Downloads(bus), brightness_watcher(bus), updates]
     if args.demo:
         _demo(bus)
     for service in services:
@@ -174,6 +181,20 @@ def main():
         tray.showMessage(f"{APP_NAME} is running",
                          f"{TAGLINE}. It lives at the top of your screen. Right-click this icon for settings.",
                          app_icon(), 6000)
+
+    def announce_update(info):
+        # One Windows notification per new version; the Settings banner stays until updated.
+        if info["state"] == "available" and first_run.value("announced_version", "") != info["version"]:
+            first_run.setValue("announced_version", info["version"])
+            tray.showMessage(f"{APP_NAME} v{info['version']} is available",
+                             "Open Settings → About to download it.", app_icon(), 8000)
+
+    def open_about():
+        settings_window.tabs.setCurrentIndex(settings_window._about_index)
+        open_settings()
+
+    bus.update.connect(announce_update)
+    tray.messageClicked.connect(lambda: settings_window.banner.isVisible() and open_about())
 
     if args.settings:
         open_settings()

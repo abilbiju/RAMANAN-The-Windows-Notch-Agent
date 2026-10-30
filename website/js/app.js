@@ -15,7 +15,7 @@ cardSprite.level = 0.3;
 new Ramanan($(".idle-sprite"), { scale: 2 });
 const musicSprite = new Ramanan($(".music-sprite"), { scale: 2, dancing: true });
 musicSprite.level = 0.7;
-const meetSprite = new Ramanan($(".meet-sprite"), { scale: 12 });
+const meetSprite = new Ramanan($(".meet-sprite"), { scale: 12, wide: true });
 const finalSprite = new Ramanan($(".final-sprite"), { scale: 6, dancing: true });
 finalSprite.level = 0.4;
 

@@ -179,7 +179,9 @@ class SettingsWindow(QWidget):
         form.addRow("Character", self._combo("mascot", [
             ("Ramanan (pixel art)", "ramanan"), ("None", "none")]))
         form.addRow(self._hint("Ramanan stands in the resting notch with fish swimming past, and dances "
-                               "in the now-playing pill when music plays. Shown with the Pill resting style."))
+                               "in the now-playing pill when music plays. He naps when you're away, sweats "
+                               "on low battery, parties when a download finishes and gasps when the camera "
+                               "turns on. Shown with the Pill resting style."))
         return page
 
     def _behaviour(self):

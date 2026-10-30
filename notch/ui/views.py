@@ -10,9 +10,9 @@ from .widgets import AlbumArt, Bar, IconSlot, PrivacyDots, TextLabel, Visualizer
 
 
 class IdleView(QWidget):
-    def __init__(self, level_source, parent=None):
+    def __init__(self, level_source, mood=None, parent=None):
         super().__init__(parent)
-        self.scene = MascotScene(level_source, self)
+        self.scene = MascotScene(level_source, mood, self)
         self.scene.hide()
         lay = QHBoxLayout(self)
         lay.setContentsMargins(12, 0, 14, 0)
@@ -32,12 +32,12 @@ class CompactView(QWidget):
     """Dynamic-Island style 'now playing': artwork (or the dancing mascot)
     left, bars right."""
 
-    def __init__(self, level_source, parent=None):
+    def __init__(self, level_source, mood=None, parent=None):
         super().__init__(parent)
         lay = QHBoxLayout(self)
         lay.setContentsMargins(10, 0, 14, 0)
         lay.setSpacing(10)
-        self.ramanan = Ramanan(level_source)
+        self.ramanan = Ramanan(level_source, mood)
         self.ramanan.hide()
         self.art = AlbumArt(22, 6)
         self.title = TextLabel(12, QFont.Weight.Medium, SUB)

@@ -12,6 +12,7 @@ from PySide6.QtWidgets import QApplication, QGraphicsOpacityEffect, QWidget
 
 from .. import APP_NAME
 from .expanded import DATA_DIR, ExpandedView, dark_menu, show_in_folder
+from .mascot import Mood
 from .theme import BG, BLUE, FG, GREEN, ORANGE, PURPLE, RED, SUB, YELLOW, G
 from .views import CompactView, HudView, IdleView
 from .widgets import accent_from_image
@@ -190,8 +191,9 @@ class NotchWindow(QWidget):
         self._outside_since = None
 
         self.surface = Surface(self)
-        self.idle_view = IdleView(self.level_source, self.surface)
-        self.compact_view = CompactView(self.level_source, self.surface)
+        self.mood = Mood(bus)
+        self.idle_view = IdleView(self.level_source, self.mood, self.surface)
+        self.compact_view = CompactView(self.level_source, self.mood, self.surface)
         self.hud_view = HudView(self.surface)
         self.activity_view = HudView(self.surface)
         self.expanded_view = ExpandedView(self, self.surface)

@@ -65,7 +65,7 @@ python -m venv .venv
 | Camera / mic | Green / orange dots + "in use by <app>" HUD | CapabilityAccessManager consent store |
 | Downloads | Live activity with size + speed, "Download complete → Show" | Watches Downloads for `.crdownload` / `.part` |
 | Fullscreen | Hides in games, videos, presentations | `SHQueryUserNotificationState` |
-| Mascot | Pixel-art Ramanan who blinks, and dances when music plays | Drawn in code (`notch/ui/mascot.py`) |
+| Mascot | Pixel-art Ramanan who blinks, dances with real moves (bhangra, disco, wave, flex…) when music plays, and has moods: sleepy when idle, sweating on low battery, partying when a download or charge finishes, shocked when the camera turns on | Drawn in code (`notch/ui/mascot.py`) |
 
 ## License
 

@@ -11,6 +11,7 @@ from PySide6.QtWidgets import (QCheckBox, QColorDialog, QComboBox, QFormLayout, 
 
 from .. import APP_NAME, REPO, VERSION
 from ..settings import DEFAULTS, autostart_enabled, set_autostart
+from .cast import CAST
 
 STYLE = """
 QWidget { background: #1c1c1e; color: #f5f5f7; font: 13px 'Segoe UI'; }
@@ -177,11 +178,15 @@ class SettingsWindow(QWidget):
 
         self._section(form, "Mascot")
         form.addRow("Character", self._combo("mascot", [
-            ("Ramanan (pixel art)", "ramanan"), ("None", "none")]))
-        form.addRow(self._hint("Ramanan stands in the resting notch with fish swimming past, and dances "
-                               "in the now-playing pill when music plays. He naps when you're away, sweats "
-                               "on low battery, parties when a download finishes and gasps when the camera "
-                               "turns on. Shown with the Pill resting style."))
+            (f"{c.name} ({c.source})", c.key) for c in CAST] + [("None", "none")]))
+        form.addRow(self._hint("Your character stands in the resting notch with something drifting past, "
+                               "dances in the now-playing pill when music plays and now and then shows off "
+                               "a signature move. They nap when you're away, sweat on low battery, party "
+                               "when a download finishes and gasp when the camera turns on. Shown with the "
+                               "Pill resting style."))
+        form.addRow(self._hint("Every character is an unofficial fan tribute drawn in pixel art. "
+                               f"{APP_NAME} isn't affiliated with or endorsed by any of the films, studios, "
+                               "actors or rights holders."))
         return page
 
     def _behaviour(self):

@@ -409,6 +409,8 @@ h2 { font-size: clamp(34px, 5vw, 58px); line-height: 1.02; font-weight: 800; }
 .footer nav a { color: var(--muted); text-decoration: none; font-size: 14px; }
 .footer nav a:hover { color: var(--text); }
 .fine { grid-column: 1 / -1; margin: 10px 0 0; padding-top: 22px; border-top: 1px solid var(--line); color: #6f8f96; font-size: 13px; }
+.cast-note { border-top: 0; padding-top: 0; max-width: 720px; }
+#cast .shot img { image-rendering: pixelated; }
 
 /* reveal on scroll */
 .reveal { opacity: 0; transform: translateY(24px); transition: opacity .7s ease, transform .8s var(--spring); }

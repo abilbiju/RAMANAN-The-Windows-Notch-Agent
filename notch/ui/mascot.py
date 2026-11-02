@@ -3,7 +3,8 @@ Punjabi House character: curly hair, big beard and moustache, wide grin,
 yellow shirt with a chain, arms crossed. He blinks, raises his eyebrows,
 dances to music with real moves ("changa chaka chakaa") and has moods:
 sleepy when the PC is idle, sweating on low battery, partying when something
-finishes and shocked when the camera turns on."""
+finishes and shocked when the camera turns on. The rest of the cast (cast.py)
+is built on his grid, poses and moods."""
 
 import ctypes
 import math
@@ -334,57 +335,6 @@ class Ramanan(QWidget):
         p.rotate(tilt)
         p.translate(-self.width() / 2 + dx * self.PIXEL, -self.height() + dy)
         p.drawImage(QRectF(0, 0, self.width(), self.height()), img)
-
-
-class MascotScene(QWidget):
-    """Ramanan standing in the notch with pixel fish swimming behind him."""
-
-    def __init__(self, source=None, mood=None, parent=None):
-        super().__init__(parent)
-        self.fish_img = _render(FISH, FISH_COLORS)
-        self.fish = [  # x (0..1), lane y (px), speed (width/s)
-            [random.random(), 6, 0.06], [random.random(), 16, 0.09], [random.random(), 26, 0.05]]
-        self.bubbles = []
-        self.ramanan = Ramanan(source, mood, self)
-        self._last = time.monotonic()
-        self._timer = QTimer(self, interval=60, timeout=self._tick)
-
-    def showEvent(self, _):
-        self._last = time.monotonic()
-        self._timer.start()
-
-    def hideEvent(self, _):
-        self._timer.stop()
-
-    def resizeEvent(self, _):
-        r = self.ramanan
-        r.move((self.width() - r.width()) // 2, self.height() - r.height())
-
-    def _tick(self):
-        now = time.monotonic()
-        dt, self._last = now - self._last, now
-        for f in self.fish:
-            f[0] -= f[2] * dt
-            if f[0] < -0.1:
-                f[0], f[2] = 1.05, random.uniform(0.04, 0.1)
-        if random.random() < 0.04:
-            self.bubbles.append([random.uniform(0.05, 0.95), self.height()])
-        for b in self.bubbles:
-            b[1] -= 12 * dt
-        self.bubbles = [b for b in self.bubbles if b[1] > 2]
-        self.update()
-
-    def paintEvent(self, _):
-        p = QPainter(self)
-        p.setRenderHint(QPainter.SmoothPixmapTransform, False)
-        w = self.width()
-        fw, fh = self.fish_img.width() * 2, self.fish_img.height() * 2
-        for x, lane, _ in self.fish:
-            p.drawImage(QRectF(round(x * w), lane, fw, fh), self.fish_img)
-        p.setPen(Qt.NoPen)
-        p.setBrush(QColor(111, 168, 181, 150))
-        for x, y in self.bubbles:
-            p.drawRect(QRectF(round(x * w), round(y), 2, 2))
 
 
 FISH = [".TTTT.T", "TeYYYTT", ".TTTT.T"]

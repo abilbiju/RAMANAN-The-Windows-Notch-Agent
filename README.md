@@ -1,9 +1,13 @@
 # Ramanan – Your Windows Notch Agent
 
 A Dynamic Island–style notch for Windows 10/11, inspired by NotchNook, written in Python + PySide6.
-Its pixel-art mascot is a fan tribute to Ramanan from *Punjabi House*; the project isn't affiliated with the film.
+Its pixel-art mascot is a fan tribute to Ramanan from *Punjabi House*, and since v2.0 you can swap him for one of
+eleven other characters. Every mascot is an unofficial fan tribute; the project isn't affiliated with any of the films,
+studios or actors (see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md#mascots)).
 
 ![Ramanan preview](docs/preview.png)
+
+![The mascot cast doing their signature moves](docs/cast.gif)
 
 ## Download
 
@@ -28,7 +32,7 @@ area (click the `^` arrow if Windows has tucked it away; drag it onto the taskba
 
 | Tab | Options |
 |---|---|
-| Appearance | Resting style (pill / slim bar / invisible), resting width, overall size (85–130 %), display, accent colour (album artwork or custom), visualizer on/off, mascot on/off |
+| Appearance | Resting style (pill / slim bar / invisible), resting width, overall size (85–130 %), display, accent colour (album artwork or custom), visualizer on/off, mascot (pick one of 12 characters, or none) |
 | Behaviour | Start with Windows, position lock, hide in fullscreen apps, hover delay, HUD duration, default tab, show Mirror tab, now-playing pill, track-change announcements, synced lyrics |
 | Notifications | Turn each HUD on/off: volume, brightness, Caps/Num Lock, Do Not Disturb, battery, camera/mic, downloads |
 
@@ -66,6 +70,7 @@ python -m venv .venv
 | Downloads | Live activity with size + speed, "Download complete → Show" | Watches Downloads for `.crdownload` / `.part` |
 | Fullscreen | Hides in games, videos, presentations | `SHQueryUserNotificationState` |
 | Mascot | Pixel-art Ramanan who blinks, dances with real moves (bhangra, disco, wave, flex…) when music plays, and has moods: sleepy when idle, sweating on low battery, partying when a download or charge finishes, shocked when the camera turns on | Drawn in code (`notch/ui/mascot.py`) |
+| Mascot cast | Swap Ramanan for Kuthiravattom Pappu, Manavalan, Manoharan, Aadu Thoma, Mr. Bean, Jack Sparrow, Spider-Man, Iron Man, Batman, The Joker or Deadpool. Each has the same moods and dances plus a signature move (spanner sparks, shades glint, steering wheel, mundu swing, Teddy hug, compass, web, repulsors, cape, "HA HA", finger guns) and their own backdrop (road roller, car, lorry, Mini, Black Pearl, bats…) | `notch/ui/cast.py`; preview with `python tools\make_cast_gif.py` |
 
 ## License
 

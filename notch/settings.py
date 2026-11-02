@@ -14,7 +14,7 @@ DEFAULTS = {
     "accent_mode": "artwork",   # artwork | custom
     "accent_color": "#0a84ff",
     "visualizer": True,
-    "mascot": "ramanan",        # ramanan | none — pixel character living in the notch
+    "mascot": "ramanan",        # a cast key (notch/ui/cast.py) | none: pixel character living in the notch
     "display": "",              # screen name; "" = primary
     "dock_edge": "top",         # top | bottom | left | right | float
     "dock_pos": 0.5,            # position along the docked edge (0..1)

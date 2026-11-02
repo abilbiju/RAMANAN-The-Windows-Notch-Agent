@@ -41,8 +41,27 @@ Synced lyrics come from [LRCLIB](https://lrclib.net), a free lyrics database. On
 track title, artist, album and duration are sent, and this can be turned off in
 Settings → Behaviour.
 
-## Mascot
+## Mascots
 
-The pixel-art mascot is an original drawing made in code (`notch/ui/mascot.py`): a fan
-tribute to the character Ramanan from the Malayalam film *Punjabi House* (2002). This
-project isn't affiliated with or endorsed by the film's makers or cast.
+Every mascot is an original, low-resolution pixel drawing made in code
+(`notch/ui/mascot.py` and `notch/ui/cast.py`). No artwork, stills, logos or other assets
+from the original works are included. The drawings are unofficial, non-commercial fan
+tributes to these characters:
+
+| Character | From | Rights holder |
+|---|---|---|
+| Ramanan | *Punjabi House* (2002) | the film's producers |
+| Kuthiravattom Pappu (Sulaiman) | *Vellanakalude Naadu* (1988) | the film's producers |
+| Manavalan | *Pulival Kalyanam* (2003) | the film's producers |
+| Manoharan | *Aram + Aram = Kinnaram* (1985) | the film's producers |
+| Aadu Thoma | *Spadikam* (1995) | the film's producers |
+| Mr. Bean | *Mr. Bean* (1990) | Tiger Aspect Productions |
+| Jack Sparrow | *Pirates of the Caribbean* | Disney |
+| Spider-Man, Iron Man, Deadpool | Marvel comics and films | Marvel / Disney |
+| Batman, The Joker | DC comics and films | DC / Warner Bros. Discovery |
+
+All character names and likenesses are trademarks or copyrights of their respective
+owners. Ramanan (this app) isn't affiliated with, sponsored by or endorsed by any of
+them, or by the actors who played the characters. If you are a rights holder and want a
+character removed, please open an issue on the GitHub repository and it will be taken
+out in the next release.

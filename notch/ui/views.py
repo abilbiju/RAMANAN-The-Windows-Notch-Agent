@@ -4,7 +4,7 @@ from PySide6.QtCore import Qt
 from PySide6.QtGui import QColor, QFont
 from PySide6.QtWidgets import QHBoxLayout, QVBoxLayout, QWidget
 
-from .mascot import MascotScene, Ramanan
+from .cast import RAMANAN, CastMember, MascotScene
 from .theme import FG, SUB
 from .widgets import AlbumArt, Bar, IconSlot, PrivacyDots, TextLabel, Visualizer
 
@@ -12,7 +12,7 @@ from .widgets import AlbumArt, Bar, IconSlot, PrivacyDots, TextLabel, Visualizer
 class IdleView(QWidget):
     def __init__(self, level_source, mood=None, parent=None):
         super().__init__(parent)
-        self.scene = MascotScene(level_source, mood, self)
+        self.scene = MascotScene(RAMANAN, level_source, mood, self)
         self.scene.hide()
         lay = QHBoxLayout(self)
         lay.setContentsMargins(12, 0, 14, 0)
@@ -37,7 +37,7 @@ class CompactView(QWidget):
         lay = QHBoxLayout(self)
         lay.setContentsMargins(10, 0, 14, 0)
         lay.setSpacing(10)
-        self.ramanan = Ramanan(level_source, mood)
+        self.ramanan = CastMember(RAMANAN, level_source, mood)
         self.ramanan.hide()
         self.art = AlbumArt(22, 6)
         self.title = TextLabel(12, QFont.Weight.Medium, SUB)

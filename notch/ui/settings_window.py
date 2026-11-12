@@ -166,6 +166,13 @@ class SettingsWindow(QWidget):
         screens = [("Primary display", "")] + [(s.name(), s.name()) for s in QGuiApplication.screens()]
         form.addRow("Display", self._combo("display", screens))
 
+        self._section(form, "Surface")
+        form.addRow("Notch surface", self._combo("surface", [("Black", "black"), ("Glass", "glass")]))
+        form.addRow("Glass tint", self._slider("glass_tint", 10, 95, lambda v: f"{v}%"))
+        form.addRow("", self._check("glass_blur", "Frost what's behind the glass"))
+        form.addRow(self._hint("Frosting hides the notch from screenshots and screen recordings, "
+                               "because it has to look through itself to see the screen behind."))
+
         self._section(form, "Colour")
         form.addRow("Accent colour", self._combo("accent_mode", [
             ("Match album artwork", "artwork"), ("Custom colour", "custom")]))

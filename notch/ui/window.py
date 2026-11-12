@@ -7,7 +7,8 @@ import os
 import time
 
 from PySide6.QtCore import QEasingCurve, QPoint, QPropertyAnimation, QRect, QRectF, Qt, QTimer, QVariantAnimation
-from PySide6.QtGui import QColor, QCursor, QGuiApplication, QImage, QPainter, QPainterPath, QTransform
+from PySide6.QtGui import (QColor, QCursor, QGuiApplication, QImage, QLinearGradient, QPainter, QPainterPath,
+                           QPen, QTransform)
 from PySide6.QtWidgets import QApplication, QGraphicsOpacityEffect, QWidget
 
 from .. import APP_NAME
@@ -74,6 +75,49 @@ class Surface(QWidget):
         self._dragging = False
         self._track = QTimer(self, interval=16, timeout=self._track_tick)
         self.setAcceptDrops(True)
+        # Glass: a blurred copy of the screen behind the notch, refreshed a few
+        # times a second. Needs the window excluded from capture (set by the
+        # window), otherwise the grab would include the notch itself.
+        self.backdrop = None
+        self.can_blur = False
+        self._grab = QTimer(self, interval=125, timeout=self._grab_backdrop)
+
+    def glass(self):
+        return self.win.settings.get("surface") == "glass"
+
+    def update_backdrop_timer(self):
+        on = self.glass() and self.win.settings.get("glass_blur") and self.can_blur
+        if on and not self._grab.isActive():
+            self._grab.start()
+            self._grab_backdrop()
+        elif not on:
+            self._grab.stop()
+            self.backdrop = None
+            self.update()
+
+    def resizeEvent(self, _):
+        if self._grab.isActive():  # keep the frost in step with the spring animation
+            self._grab_backdrop()
+
+    def moveEvent(self, _):
+        if self._grab.isActive():
+            self._grab_backdrop()
+
+    def _grab_backdrop(self):
+        if not self.win.isVisible() or self.width() < 2 or self.height() < 2:
+            return
+        screen = self.win.screen() or QApplication.primaryScreen()
+        top_left = self.mapToGlobal(QPoint(0, 0)) - screen.geometry().topLeft()
+        shot = screen.grabWindow(0, top_left.x(), top_left.y(), self.width(), self.height())
+        if shot.isNull():
+            return
+        img = shot.toImage()
+        w, h = img.width(), img.height()
+        # Two smooth downscales then one upscale make a cheap, soft blur.
+        small = img.scaled(max(1, w // 4), max(1, h // 4), Qt.IgnoreAspectRatio, Qt.SmoothTransformation)
+        small = small.scaled(max(1, w // 14), max(1, h // 14), Qt.IgnoreAspectRatio, Qt.SmoothTransformation)
+        self.backdrop = small.scaled(w, h, Qt.IgnoreAspectRatio, Qt.SmoothTransformation)
+        self.update()
 
     def _path(self):
         w, h, edge = self.width(), self.height(), self.win.edge
@@ -96,7 +140,36 @@ class Surface(QWidget):
         # Alpha 1 is invisible but still receives the mouse, so an
         # "invisible" resting notch can still be hovered open.
         invisible = self.win.mode == "idle" and self.win.idle_style() == "invisible"
-        p.fillPath(self._path(), QColor(0, 0, 0, 1) if invisible else BG)
+        path = self._path()
+        if invisible:
+            p.fillPath(path, QColor(0, 0, 0, 1))
+        elif self.glass():
+            self._paint_glass(p, path)
+        else:
+            p.fillPath(path, BG)
+
+    def _paint_glass(self, p, path):
+        tint = _clamp(self.win.settings.get("glass_tint"), 10, 95) / 100
+        p.save()
+        p.setClipPath(path)
+        if self.backdrop is not None:
+            p.setRenderHint(QPainter.SmoothPixmapTransform)
+            p.drawImage(QRectF(self.rect()), self.backdrop)
+        # dark tint, a touch lighter at the top like light catching the glass
+        rect = QRectF(self.rect())
+        shade = QLinearGradient(rect.topLeft(), rect.bottomLeft())
+        shade.setColorAt(0.0, QColor(28, 28, 34, round(255 * tint)))
+        shade.setColorAt(1.0, QColor(8, 8, 12, round(255 * min(1.0, tint + 0.12))))
+        p.fillRect(rect, shade)
+        sheen = QLinearGradient(rect.topLeft(), rect.bottomRight())
+        sheen.setColorAt(0.0, QColor(255, 255, 255, 22))
+        sheen.setColorAt(0.45, QColor(255, 255, 255, 0))
+        p.fillRect(rect, sheen)
+        p.restore()
+        # thin bright rim
+        p.setPen(QPen(QColor(255, 255, 255, 46), 1.0))
+        p.setBrush(Qt.NoBrush)
+        p.drawPath(path)
 
     def enterEvent(self, _):
         self.win.hover_enter()
@@ -234,7 +307,7 @@ class NotchWindow(QWidget):
         app.screenRemoved.connect(lambda _: QTimer.singleShot(0, self.place))
         app.primaryScreenChanged.connect(lambda _: self.place())
         settings.changed.connect(self.on_setting)
-        for key in ("hover_delay", "visualizer", "show_mirror", "accent_mode", "mascot"):
+        for key in ("hover_delay", "visualizer", "show_mirror", "accent_mode", "mascot", "surface"):
             self.on_setting(key)
         self.place()
         self._set_mode("idle", instant=True)
@@ -274,6 +347,22 @@ class NotchWindow(QWidget):
             self._apply_visibility()
         elif key == "compact_media":
             self._resolve()
+        elif key in ("surface", "glass_blur", "glass_tint"):
+            self._apply_surface()
+
+    def _apply_surface(self):
+        blur = self.settings.get("surface") == "glass" and self.settings.get("glass_blur")
+        # WDA_EXCLUDEFROMCAPTURE (Windows 10 2004+) keeps the notch out of its
+        # own backdrop grab. Side effect: screenshots and recordings skip it.
+        try:
+            ok = ctypes.windll.user32.SetWindowDisplayAffinity(int(self.winId()), 0x11 if blur else 0)
+        except Exception:
+            ok = False
+        self.surface.can_blur = bool(ok) and blur
+        if blur and not ok:
+            log.warning("glass blur unavailable: could not exclude the notch from capture")
+        self.surface.update_backdrop_timer()
+        self.surface.update()
 
     def _apply_idle_style(self):
         pill = self.idle_style() == "pill"
